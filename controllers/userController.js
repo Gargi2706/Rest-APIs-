@@ -3,6 +3,7 @@ const { apiResponse } = require("../utils/util");
 
 exports.createUser = async (req, res) => {
   try {
+
     const user = new User(req.body);
 
     await user.save();
@@ -23,7 +24,11 @@ exports.updateUser = async (req, res) => {
         success: false,
         message: "User not found",
       });
+      
     }
+    console.log(user);
+        return apiResponse(res, 200, "User updated successfully", user);
+
     res.json({
       success: true,
       data: user,
@@ -56,24 +61,28 @@ exports.getUserById = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 5;
 
     const skip = (page - 1) * limit;
 
     const { searchKey, searchValue } = req.query;
-
+console.log(searchKey, searchValue);searchkey
     let query = {};
 
     if (searchKey && searchValue) {
       query[searchKey] = searchValue;
     }
+
+
     const users = await User.find(query).skip(skip).limit(limit);
+    const totalUsers = await User.countDocuments(query);
 
     res.json({
       success: true,
-      data: users,
+      total: totalUsers,
       page: page,
       limit: limit,
+      data: users,
       message: "Users found",
     });
   } catch (error) {

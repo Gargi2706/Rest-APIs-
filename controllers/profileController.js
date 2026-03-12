@@ -69,7 +69,7 @@ exports.getProfileById = async (req, res) => {
 
 exports.getAllProfiles = async (req, res) => {
   try {
-    const profiles = await Profile.find().populate("userId", "name email"); // Populate user details
+    const profiles = await Profile.find().populate("userId", "name email"); 
 
     res.json({
       success: true,
